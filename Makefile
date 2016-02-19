@@ -1,0 +1,1 @@
+gcc -pg -o psum1 psum1.c
