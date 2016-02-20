@@ -11,39 +11,6 @@ vec_length:
 	popq	%rbp
 	ret
 	.size	vec_length, .-vec_length
-	.globl	combine1
-	.type	combine1, @function
-combine1:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$48, %rsp
-	movq	%rdi, -40(%rbp)
-	movq	$0, -8(%rbp)
-	jmp	.L4
-.L5:
-	leaq	-20(%rbp), %rdx
-	movq	-8(%rbp), %rcx
-	movq	-40(%rbp), %rax
-	movq	%rcx, %rsi
-	movq	%rax, %rdi
-	movl	$0, %eax
-	call	get_vec_element
-	movl	-20(%rbp), %eax
-	cltq
-	addq	%rax, -16(%rbp)
-	addq	$1, -8(%rbp)
-.L4:
-	movq	-40(%rbp), %rax
-	movq	%rax, %rdi
-	call	vec_length
-	cmpq	-8(%rbp), %rax
-	jg	.L5
-	movq	-40(%rbp), %rax
-	movq	-16(%rbp), %rdx
-	movq	%rdx, 8(%rax)
-	leave
-	ret
-	.size	combine1, .-combine1
 	.globl	get_vec_element
 	.type	get_vec_element, @function
 get_vec_element:
@@ -53,15 +20,15 @@ get_vec_element:
 	movq	%rsi, -16(%rbp)
 	movq	%rdx, -24(%rbp)
 	cmpq	$0, -16(%rbp)
-	js	.L7
+	js	.L4
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
 	cmpq	-16(%rbp), %rax
-	jg	.L8
-.L7:
+	jg	.L5
+.L4:
 	movl	$0, %eax
-	jmp	.L9
-.L8:
+	jmp	.L6
+.L5:
 	movq	-8(%rbp), %rax
 	movq	16(%rax), %rax
 	movq	-16(%rbp), %rdx
@@ -71,10 +38,42 @@ get_vec_element:
 	movq	-24(%rbp), %rax
 	movl	%edx, (%rax)
 	movl	$1, %eax
-.L9:
+.L6:
 	popq	%rbp
 	ret
 	.size	get_vec_element, .-get_vec_element
+	.globl	combine1
+	.type	combine1, @function
+combine1:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$40, %rsp
+	movq	%rdi, -40(%rbp)
+	movq	$0, -8(%rbp)
+	jmp	.L8
+.L9:
+	leaq	-20(%rbp), %rdx
+	movq	-8(%rbp), %rcx
+	movq	-40(%rbp), %rax
+	movq	%rcx, %rsi
+	movq	%rax, %rdi
+	call	get_vec_element
+	movl	-20(%rbp), %eax
+	cltq
+	addq	%rax, -16(%rbp)
+	addq	$1, -8(%rbp)
+.L8:
+	movq	-40(%rbp), %rax
+	movq	%rax, %rdi
+	call	vec_length
+	cmpq	-8(%rbp), %rax
+	jg	.L9
+	movq	-40(%rbp), %rax
+	movq	-16(%rbp), %rdx
+	movq	%rdx, 8(%rax)
+	leave
+	ret
+	.size	combine1, .-combine1
 	.section	.rodata
 .LC0:
 	.string	"Error allocating"

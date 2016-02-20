@@ -22,6 +22,15 @@ long int vec_length(struct vec* v)
 }
 
 
+int get_vec_element(struct vec * v, long int index, int* dest)
+{
+	if (index < 0 || index >= v->len)
+		return 0;
+	*dest = v->data[index];
+	return 1;
+}
+
+
 void combine1(struct vec* v)
 {
 	long int i, dest;
@@ -32,15 +41,6 @@ void combine1(struct vec* v)
 		dest = dest OP val;
 	}
 	v->result = dest;
-}
-
-
-int get_vec_element(struct vec * v, long int index, int* dest)
-{
-	if (index < 0 || index >= v->len)
-		return 0;
-	*dest = v->data[index];
-	return 1;
 }
 
 
