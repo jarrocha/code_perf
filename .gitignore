@@ -28,6 +28,9 @@
 *.x86_64
 *.hex
 psum1
+*_O1
+*_O2
+*_O3
 
 # Debug files
 *.dSYM/

@@ -55,13 +55,15 @@ struct vec * new_vec(long int len)
 		exit(EXIT_FAILURE);
 	}
 	alloc->len = len;
-	if (len > 0) {
-		alloc->data = malloc(len * sizeof(int));
-		if (alloc->data == NULL) {
-			free((void *) alloc);
-			printf("Error allocating data\n");
-			exit(EXIT_FAILURE);
-		}
+	if (len <= 0) {
+		printf("Invalid len size. Quitting\n");
+		exit(EXIT_FAILURE);
+	}
+	alloc->data = malloc(len * sizeof(int));
+	if (alloc->data == NULL) {
+		free((void *) alloc);
+		printf("Error allocating data\n");
+		exit(EXIT_FAILURE);
 	}
 	dat_ptr = alloc->data;
 	for (i = 0; i < len; i++)
@@ -71,14 +73,18 @@ struct vec * new_vec(long int len)
 }
 
 
-int main()
+int main(int argc, char *argv[])
 {
 	long int num;
 	struct vec *vec_ptr;
 	srand(time(NULL));
 
-	printf("Enter size of array: ");
-	scanf("%ld", &num);
+	if (argc != 2) {
+		printf("Usage: %s [ARRAY_ELEMENTS]\n", argv[0]);
+		exit(EXIT_SUCCESS);
+	}
+	
+	num = atol(argv[1]);
 	printf("User entered %ld\n", num);
 	vec_ptr = new_vec(num);
 	combine1(vec_ptr);

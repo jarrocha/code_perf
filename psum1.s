@@ -78,6 +78,8 @@ combine1:
 .LC0:
 	.string	"Error allocating"
 .LC1:
+	.string	"Invalid len size. Quitting"
+.LC2:
 	.string	"Error allocating data"
 	.text
 	.globl	new_vec
@@ -102,7 +104,12 @@ new_vec:
 	movq	-56(%rbp), %rdx
 	movq	%rdx, (%rax)
 	cmpq	$0, -56(%rbp)
-	jle	.L12
+	jg	.L12
+	movl	$.LC1, %edi
+	call	puts
+	movl	$1, %edi
+	call	exit
+.L12:
 	movq	-56(%rbp), %rax
 	salq	$2, %rax
 	movq	%rax, %rdi
@@ -113,21 +120,21 @@ new_vec:
 	movq	-32(%rbp), %rax
 	movq	16(%rax), %rax
 	testq	%rax, %rax
-	jne	.L12
+	jne	.L13
 	movq	-32(%rbp), %rax
 	movq	%rax, %rdi
 	call	free
-	movl	$.LC1, %edi
+	movl	$.LC2, %edi
 	call	puts
 	movl	$1, %edi
 	call	exit
-.L12:
+.L13:
 	movq	-32(%rbp), %rax
 	movq	16(%rax), %rax
 	movq	%rax, -40(%rbp)
 	movl	$0, -20(%rbp)
-	jmp	.L13
-.L14:
+	jmp	.L14
+.L15:
 	movl	-20(%rbp), %eax
 	cltq
 	leaq	0(,%rax,4), %rdx
@@ -151,11 +158,11 @@ new_vec:
 	leal	1(%rdx), %eax
 	movl	%eax, (%rbx)
 	addl	$1, -20(%rbp)
-.L13:
+.L14:
 	movl	-20(%rbp), %eax
 	cltq
 	cmpq	-56(%rbp), %rax
-	jl	.L14
+	jl	.L15
 	movq	-32(%rbp), %rax
 	addq	$56, %rsp
 	popq	%rbx
@@ -163,13 +170,13 @@ new_vec:
 	ret
 	.size	new_vec, .-new_vec
 	.section	.rodata
-.LC2:
-	.string	"Enter size of array: "
 .LC3:
-	.string	"%ld"
+	.string	"Enter size of array: "
 .LC4:
-	.string	"User entered %ld\n"
+	.string	"%ld"
 .LC5:
+	.string	"User entered %ld\n"
+.LC6:
 	.string	"Final result %ld\n"
 	.text
 	.globl	main
@@ -182,17 +189,17 @@ main:
 	call	time
 	movl	%eax, %edi
 	call	srand
-	movl	$.LC2, %edi
+	movl	$.LC3, %edi
 	movl	$0, %eax
 	call	printf
 	leaq	-16(%rbp), %rax
 	movq	%rax, %rsi
-	movl	$.LC3, %edi
+	movl	$.LC4, %edi
 	movl	$0, %eax
 	call	__isoc99_scanf
 	movq	-16(%rbp), %rax
 	movq	%rax, %rsi
-	movl	$.LC4, %edi
+	movl	$.LC5, %edi
 	movl	$0, %eax
 	call	printf
 	movq	-16(%rbp), %rax
@@ -205,7 +212,7 @@ main:
 	movq	-8(%rbp), %rax
 	movq	8(%rax), %rax
 	movq	%rax, %rsi
-	movl	$.LC5, %edi
+	movl	$.LC6, %edi
 	movl	$0, %eax
 	call	printf
 	movq	-8(%rbp), %rax
