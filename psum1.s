@@ -171,12 +171,10 @@ new_vec:
 	.size	new_vec, .-new_vec
 	.section	.rodata
 .LC3:
-	.string	"Enter size of array: "
+	.string	"Usage: %s [ARRAY_ELEMENTS]\n"
 .LC4:
-	.string	"%ld"
-.LC5:
 	.string	"User entered %ld\n"
-.LC6:
+.LC5:
 	.string	"Final result %ld\n"
 	.text
 	.globl	main
@@ -184,38 +182,49 @@ new_vec:
 main:
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$16, %rsp
+	subq	$32, %rsp
+	movl	%edi, -20(%rbp)
+	movq	%rsi, -32(%rbp)
 	movl	$0, %edi
 	call	time
 	movl	%eax, %edi
 	call	srand
+	cmpl	$2, -20(%rbp)
+	je	.L18
+	movq	-32(%rbp), %rax
+	movq	(%rax), %rax
+	movq	%rax, %rsi
 	movl	$.LC3, %edi
 	movl	$0, %eax
 	call	printf
-	leaq	-16(%rbp), %rax
+	movl	$0, %edi
+	call	exit
+.L18:
+	movq	-32(%rbp), %rax
+	addq	$8, %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdi
+	call	atol
+	movq	%rax, -8(%rbp)
+	movq	-8(%rbp), %rax
 	movq	%rax, %rsi
 	movl	$.LC4, %edi
 	movl	$0, %eax
-	call	__isoc99_scanf
+	call	printf
+	movq	-8(%rbp), %rax
+	movq	%rax, %rdi
+	call	new_vec
+	movq	%rax, -16(%rbp)
 	movq	-16(%rbp), %rax
+	movq	%rax, %rdi
+	call	combine1
+	movq	-16(%rbp), %rax
+	movq	8(%rax), %rax
 	movq	%rax, %rsi
 	movl	$.LC5, %edi
 	movl	$0, %eax
 	call	printf
 	movq	-16(%rbp), %rax
-	movq	%rax, %rdi
-	call	new_vec
-	movq	%rax, -8(%rbp)
-	movq	-8(%rbp), %rax
-	movq	%rax, %rdi
-	call	combine1
-	movq	-8(%rbp), %rax
-	movq	8(%rax), %rax
-	movq	%rax, %rsi
-	movl	$.LC6, %edi
-	movl	$0, %eax
-	call	printf
-	movq	-8(%rbp), %rax
 	movq	%rax, %rdi
 	call	free
 	movl	$0, %eax
