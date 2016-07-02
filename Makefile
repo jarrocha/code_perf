@@ -6,6 +6,10 @@ GFLAGS2= -pg -g -Wall
 GFLAGS3= -Wall
 IN= psum1.c
 
+psum2:
+	$(GCC) $(GFLAGS2) -o psum2 psum2.c
+psum2.s:
+	$(GCC) $(GFLAGS1) psum2.c
 psum1:
 	$(GCC) $(GFLAGS2) -o psum1 $(IN)
 psum1_O1:
